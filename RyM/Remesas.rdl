@@ -934,9 +934,9 @@ AND (numero_solicitud = @numero_solicitud OR @numero_solicitud = '')</CommandTex
             </Paragraphs>
             <rd:DefaultName>textbox1</rd:DefaultName>
             <Top>0.47837cm</Top>
-            <Left>6.49622cm</Left>
+            <Left>6.31101cm</Left>
             <Height>0.31222in</Height>
-            <Width>5.50948in</Width>
+            <Width>5.5824in</Width>
             <ZIndex>2</ZIndex>
             <Style>
               <PaddingLeft>2pt</PaddingLeft>
