@@ -25,7 +25,7 @@ New-Service `
     -Name $ServiceName `
     -BinaryPathName "`"$exePath`"" `
     -DisplayName $ServiceName `
-    -Description "Genera y envia reportes Natura de eventos RYM." `
+    -Description "Genera reportes Natura de eventos RYM para descarga web." `
     -StartupType Automatic | Out-Null
 
 $firewallRuleName = "$ServiceName HTTP $Port"

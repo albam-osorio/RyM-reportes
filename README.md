@@ -36,10 +36,10 @@ Abre `http://localhost:5085`.
 
 ## Publicacion en Windows Server
 
-Publica la aplicacion en Release:
+Publica la aplicacion en Release para Windows x64. El paquete self-contained evita instalar el runtime de .NET en el servidor:
 
 ```powershell
-dotnet publish .\src\RymReportes.Web\RymReportes.Web.csproj -c Release -r win-x64 --self-contained false -o C:\Services\RymReportes
+dotnet publish .\src\RymReportes.Web\RymReportes.Web.csproj -c Release -r win-x64 --self-contained true -o C:\Services\RymReportes
 ```
 
 Instala el servicio desde PowerShell como administrador:
