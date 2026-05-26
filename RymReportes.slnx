@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/RymReportes.Web/RymReportes.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/RymReportes.Tests/RymReportes.Tests.csproj" />
+  </Folder>
+</Solution>
