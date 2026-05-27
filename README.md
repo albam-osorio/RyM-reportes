@@ -6,7 +6,7 @@ Aplicacion ASP.NET Core .NET 10 para generar reportes de eventos en Excel 365 y 
 
 La configuracion base esta en `src/RymReportes.Web/appsettings.json`.
 
-- `appsettings.Development.json`: pruebas locales contra `ec2-52-203-6-228.compute-1.amazonaws.com,1433`.
+- `appsettings.Development.json`: pruebas locales, con cadena real configurada fuera de git.
 - `appsettings.Production.json`: produccion contra `localhost,1433`.
 - La aplicacion escucha por defecto en `http://0.0.0.0:5085` en produccion.
 
