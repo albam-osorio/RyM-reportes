@@ -248,6 +248,11 @@ ServiceFabricBackup/
 # SQL Server files
 *.mdf
 *.ldf
+
+# Local application configuration with secrets
+appsettings.Local.json
+src/**/appsettings.Local.json
+src/**/appsettings.*.Local.json
 *.ndf
 
 # Business Intelligence projects

@@ -14,16 +14,22 @@ La configuracion base esta en `src/RymReportes.Web/appsettings.json`.
 {
   "Urls": "http://0.0.0.0:5085",
   "Database": {
-    "ConnectionString": "Server=localhost,1433;Database=rymdb;User Id=remesas;Password=remesas;TrustServerCertificate=True;"
+    "ConnectionString": ""
   }
 }
 ```
 
-Para no guardar la cadena de conexion en el archivo, usa user-secrets en desarrollo:
+La cadena de conexion real no debe guardarse en git. Configurala con user-secrets en desarrollo:
 
 ```bash
 dotnet user-secrets init --project src/RymReportes.Web
-dotnet user-secrets set "Database:ConnectionString" "Server=...;Database=rymdb;User Id=...;Password=...;TrustServerCertificate=True;" --project src/RymReportes.Web
+dotnet user-secrets set "Database:ConnectionString" "<cadena-de-conexion-sql-server>" --project src/RymReportes.Web
+```
+
+En Windows Server, usa una variable de entorno del sistema o configura el valor directamente en el archivo publicado que no se sube al repositorio:
+
+```powershell
+[Environment]::SetEnvironmentVariable("Database__ConnectionString", "<cadena-de-conexion-sql-server>", "Machine")
 ```
 
 ## Ejecucion

@@ -20,10 +20,18 @@ En `C:\Services\RymReportes\appsettings.Production.json` debe quedar:
 {
   "Urls": "http://0.0.0.0:5085",
   "Database": {
-    "ConnectionString": "Server=localhost,1433;Database=rymdb;User Id=remesas;Password=remesas;TrustServerCertificate=True;"
+    "ConnectionString": ""
   }
 }
 ```
+
+Configura la cadena real como variable de entorno del sistema, fuera de git:
+
+```powershell
+[Environment]::SetEnvironmentVariable("Database__ConnectionString", "<cadena-de-conexion-sql-server>", "Machine")
+```
+
+Despues de cambiar variables de entorno, reinicia el servicio si ya estaba instalado.
 
 ## 3. Instalar servicio
 
