@@ -10,7 +10,7 @@ public class ConfigurationSecretsTests
         "User Id" + "=remesas",
         "Password" + "=;",
         "Password" + "=",
-        "ec2-52-203-6-228"
+        "ec2-" + "52-203-6-228"
     ];
 
     [Fact]
