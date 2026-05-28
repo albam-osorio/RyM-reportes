@@ -1,14 +1,14 @@
 @if (loadingSession()) {
   <main class="auth-page">
     <div class="auth-shell">
-      <img class="auth-logo" src="/logo-remesas-mensajes.png" alt="Remesas y Mensajes" />
+      <img class="auth-logo" [src]="logoSrc()" alt="Remesas y Mensajes" />
       <p class="loading-text">Cargando...</p>
     </div>
   </main>
 } @else if (route() === '/login') {
   <main class="auth-page">
     <div class="auth-shell">
-      <img class="auth-logo" src="/logo-remesas-mensajes.png" alt="Remesas y Mensajes" />
+      <img class="auth-logo" [src]="logoSrc()" alt="Remesas y Mensajes" />
       <section class="auth-panel">
         <h1>Iniciar sesión</h1>
         <form class="stack" (ngSubmit)="loginSubmit()">
@@ -42,7 +42,7 @@
 } @else if (route() === '/register') {
   <main class="auth-page">
     <div class="auth-shell">
-      <img class="auth-logo" src="/logo-remesas-mensajes.png" alt="Remesas y Mensajes" />
+      <img class="auth-logo" [src]="logoSrc()" alt="Remesas y Mensajes" />
       <section class="auth-panel">
         <h1>Solicitar usuario</h1>
         <form class="stack" (ngSubmit)="registerSubmit()">
@@ -75,7 +75,7 @@
 } @else if (route() === '/forgot-password') {
   <main class="auth-page">
     <div class="auth-shell">
-      <img class="auth-logo" src="/logo-remesas-mensajes.png" alt="Remesas y Mensajes" />
+      <img class="auth-logo" [src]="logoSrc()" alt="Remesas y Mensajes" />
       <section class="auth-panel">
         <h1>Recuperar contraseña</h1>
         <form class="stack" (ngSubmit)="forgotPasswordSubmit()">
@@ -95,7 +95,7 @@
 } @else if (route() === '/reset-password') {
   <main class="auth-page">
     <div class="auth-shell">
-      <img class="auth-logo" src="/logo-remesas-mensajes.png" alt="Remesas y Mensajes" />
+      <img class="auth-logo" [src]="logoSrc()" alt="Remesas y Mensajes" />
       <section class="auth-panel">
         <h1>Nueva contraseña</h1>
         <form class="stack" (ngSubmit)="resetPasswordSubmit()">
@@ -121,7 +121,7 @@
 } @else if (route() === '/force-password-change') {
   <main class="auth-page">
     <div class="auth-shell">
-      <img class="auth-logo" src="/logo-remesas-mensajes.png" alt="Remesas y Mensajes" />
+      <img class="auth-logo" [src]="logoSrc()" alt="Remesas y Mensajes" />
       <section class="auth-panel">
         <h1>Cambiar contraseña</h1>
         <form class="stack" (ngSubmit)="changePasswordSubmit()">
@@ -153,115 +153,450 @@
     </div>
   </main>
 } @else {
-  <main class="shell">
-    <header class="page-header">
-      <button class="brand-lockup brand-button" type="button" (click)="go('/')">
-        <img class="brand-logo" src="/logo-remesas-mensajes.png" alt="Remesas y Mensajes" />
-        <span class="brand-title">Reportes de eventos</span>
+  <main class="app-shell" [class.menu-open]="mobileMenuOpen()" [class.sidebar-collapsed]="sidebarCollapsed()">
+    <header class="app-header">
+      <div class="shell-actions">
+        <button class="icon-button mobile-menu-toggle" type="button" aria-label="Abrir menú" title="Abrir menú" (click)="mobileMenuOpen.set(!mobileMenuOpen())">
+          <svg [lucideIcon]="icons.menu" size="20"></svg>
+        </button>
+        <button class="icon-button desktop-sidebar-toggle" type="button" [attr.aria-label]="sidebarCollapsed() ? 'Mostrar menú lateral' : 'Ocultar menú lateral'" [attr.title]="sidebarCollapsed() ? 'Mostrar menú lateral' : 'Ocultar menú lateral'" (click)="toggleSidebar()">
+          <svg [lucideIcon]="sidebarCollapsed() ? icons.openPanel : icons.closePanel" size="20"></svg>
+        </button>
+        <button class="icon-button home-button" type="button" aria-label="Inicio" title="Inicio" (click)="go('/')">
+          <svg [lucideIcon]="icons.home" size="20"></svg>
+        </button>
+      </div>
+
+      <button class="brand-button" type="button" aria-label="RYM Reportes" title="RYM Reportes" (click)="go('/')">
+        <img class="brand-logo" [src]="logoSrc()" alt="Remesas y Mensajes" />
       </button>
-      <div class="top-actions">
-        @if (isAdmin()) {
-          <button class="text-link" type="button" (click)="go('/usuarios')">Usuarios</button>
+
+      <div class="account-area">
+        <button class="account-button" type="button" (click)="accountMenuOpen.set(!accountMenuOpen())">
+          <svg [lucideIcon]="icons.user" size="18"></svg>
+          <span>{{ session()?.fullName || session()?.email }}</span>
+          <svg [lucideIcon]="icons.chevronDown" size="16"></svg>
+        </button>
+        @if (accountMenuOpen()) {
+          <div class="account-menu">
+            <button type="button" (click)="go('/preferencias')">
+              <svg [lucideIcon]="icons.settings" size="17"></svg>
+              Preferencias
+            </button>
+            <button type="button" (click)="go('/force-password-change')">
+              <svg [lucideIcon]="icons.key" size="17"></svg>
+              Cambiar contraseña
+            </button>
+            <button type="button" (click)="logoutSubmit()">
+              <svg [lucideIcon]="icons.logOut" size="17"></svg>
+              Salir
+            </button>
+          </div>
         }
-        <span class="user-pill">{{ session()?.fullName || session()?.email }}</span>
-        <button class="secondary" type="button" (click)="logoutSubmit()">Salir</button>
       </div>
     </header>
 
-    @if (route() === '/usuarios') {
-      <section class="panel">
-        <div class="panel-heading">
-          <h2>Usuarios</h2>
-        </div>
-        @if (!isAdmin()) {
-          <p class="muted">Tu usuario no tiene permisos para administrar usuarios.</p>
-        } @else if (loadingUsers()) {
-          <p class="muted">Cargando usuarios...</p>
-        } @else {
+    <aside class="sidebar">
+      <nav aria-label="Menú principal">
+        @for (section of navigationSections(); track section.category) {
+          <section class="nav-section">
+            <h2>{{ section.category }}</h2>
+            @for (item of section.items; track item.route) {
+              <button class="nav-item" [class.active]="route() === item.route" type="button" [attr.title]="item.title" (click)="go(item.route)">
+                <svg [lucideIcon]="item.icon" size="19"></svg>
+                <span>{{ item.title }}</span>
+              </button>
+            }
+          </section>
+        }
+      </nav>
+    </aside>
+
+    @if (mobileMenuOpen()) {
+      <button class="menu-backdrop" type="button" aria-label="Cerrar menú" (click)="mobileMenuOpen.set(false)"></button>
+    }
+
+    <section class="content">
+      @if (route() === '/') {
+        <section class="page-heading">
+          <div>
+            <p class="eyebrow">RYM</p>
+            <h1>Inicio</h1>
+          </div>
+        </section>
+
+        <section class="module-grid" aria-label="Opciones">
+          @for (module of featuredModules(); track module.route) {
+            <button class="module-card" type="button" (click)="go(module.route)">
+              <span class="module-icon"><svg [lucideIcon]="module.icon" size="22"></svg></span>
+              <span class="module-title">{{ module.title }}</span>
+              <small>{{ module.description }}</small>
+            </button>
+          }
+        </section>
+        @if (featuredModules().length === 0) {
+          <section class="panel empty-state">
+            <h2>Sin módulos disponibles</h2>
+            <p class="muted">Tu usuario no tiene opciones habilitadas.</p>
+          </section>
+        }
+      } @else if (route() === '/preferencias') {
+        <section class="panel settings-panel">
+          <div class="panel-heading">
+            <h2>Preferencias</h2>
+          </div>
+          <div class="settings-stack">
+            <section class="settings-group">
+              <div>
+                <h3>Apariencia</h3>
+                <p class="muted">Configuración visual guardada en este navegador.</p>
+              </div>
+              <label>
+                Tema
+                <select name="theme" [ngModel]="theme()" (ngModelChange)="setTheme($event)">
+                  <option value="system">Sistema</option>
+                  <option value="light">Claro</option>
+                  <option value="dark">Oscuro</option>
+                </select>
+              </label>
+            </section>
+            <section class="settings-group">
+              <div>
+                <h3>Navegación</h3>
+                <p class="muted">Define qué pantalla se abre después de iniciar sesión.</p>
+              </div>
+              <label>
+                Página inicial
+                <select name="startPreference" [ngModel]="startPreference()" (ngModelChange)="setStartPreference($event)">
+                  <option value="remember-last">Recordar última página</option>
+                  <option value="home">Inicio</option>
+                  <option value="first-module">Primer módulo disponible</option>
+                </select>
+              </label>
+            </section>
+          </div>
+        </section>
+      } @else if (route() === '/seguridad/usuarios') {
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>Usuarios</h2>
+            <div class="panel-actions">
+              <button class="secondary" type="button" (click)="exportUsers()">
+                <svg [lucideIcon]="icons.download" size="17"></svg>
+                Exportar
+              </button>
+              <button type="button" (click)="openNewUser()">
+                <svg [lucideIcon]="icons.plus" size="17"></svg>
+                Nuevo
+              </button>
+            </div>
+          </div>
+          @if (!hasPermission('Users.Manage')) {
+            <p class="muted">Tu usuario no tiene permisos para administrar usuarios.</p>
+          } @else if (loadingUsers()) {
+            <p class="muted">Cargando usuarios...</p>
+          } @else {
+            <div class="toolbar">
+              <label class="search-control">
+                Buscar
+                <span class="search-box">
+                  <svg [lucideIcon]="icons.search" size="18"></svg>
+                  <input name="userSearch" type="search" placeholder="Nombre, email o rol" [ngModel]="userSearch()" (ngModelChange)="updateUserSearch($event)" />
+                </span>
+              </label>
+              <label>
+                Aprobación
+                <select name="approvalFilter" [ngModel]="userApprovalFilter()" (ngModelChange)="updateUserApprovalFilter($event)">
+                  <option value="all">Todos</option>
+                  <option value="approved">Aprobados</option>
+                  <option value="pending">Pendientes</option>
+                </select>
+              </label>
+              <label>
+                Estado
+                <select name="statusFilter" [ngModel]="userStatusFilter()" (ngModelChange)="updateUserStatusFilter($event)">
+                  <option value="all">Todos</option>
+                  <option value="active">Activos</option>
+                  <option value="inactive">Inactivos</option>
+                </select>
+              </label>
+              <label>
+                Por página
+                <select name="pageSize" [ngModel]="userPageSize()" (ngModelChange)="updateUserPageSize($event)">
+                  <option [ngValue]="10">10</option>
+                  <option [ngValue]="25">25</option>
+                  <option [ngValue]="50">50</option>
+                </select>
+              </label>
+              <button class="secondary toolbar-button" type="button" (click)="resetUserFilters()">
+                <svg [lucideIcon]="icons.filter" size="17"></svg>
+                Limpiar
+              </button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><button class="sort-button" type="button" (click)="sortUsers('fullName')">Nombre <svg [lucideIcon]="icons.sort" size="14"></svg></button></th>
+                    <th><button class="sort-button" type="button" (click)="sortUsers('email')">Email <svg [lucideIcon]="icons.sort" size="14"></svg></button></th>
+                    <th><button class="sort-button" type="button" (click)="sortUsers('status')">Estado <svg [lucideIcon]="icons.sort" size="14"></svg></button></th>
+                    <th><button class="sort-button" type="button" (click)="sortUsers('approval')">Aprobación <svg [lucideIcon]="icons.sort" size="14"></svg></button></th>
+                    <th><button class="sort-button" type="button" (click)="sortUsers('roles')">Roles <svg [lucideIcon]="icons.sort" size="14"></svg></button></th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (user of pagedUsers(); track user.id) {
+                    <tr>
+                      <td>{{ user.fullName }}</td>
+                      <td>{{ user.email }}</td>
+                      <td>{{ user.isActive ? 'Activo' : 'Inactivo' }}</td>
+                      <td>{{ user.isApproved ? 'Aprobado' : 'Pendiente' }}</td>
+                      <td>
+                  <span class="roles-list" [title]="roleDisplayText(user)">
+                          {{ roleDisplayText(user) }}
+                        </span>
+                      </td>
+                      <td class="row-actions">
+                        <button type="button" (click)="openEditUser(user)">
+                          <svg [lucideIcon]="icons.editUser" size="17"></svg>
+                          Editar
+                        </button>
+                        @if (user.isActive) {
+                          <button class="secondary" type="button" (click)="deactivateUserSubmit(user)">
+                            <svg [lucideIcon]="icons.shield" size="17"></svg>
+                            Desactivar acceso
+                          </button>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+            <div class="pagination">
+              <span>{{ userPageStart() }}-{{ userPageEnd() }} de {{ sortedUsers().length }}</span>
+              <div class="pagination-actions">
+                <button class="secondary" type="button" [disabled]="userPage() <= 1" (click)="goToUserPage(userPage() - 1)">Anterior</button>
+                <span>Página {{ userPage() }} de {{ totalUserPages() }}</span>
+                <button class="secondary" type="button" [disabled]="userPage() >= totalUserPages()" (click)="goToUserPage(userPage() + 1)">Siguiente</button>
+              </div>
+            </div>
+          }
+          <app-message [message]="message()"></app-message>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>Roles y funcionalidades</h2>
+            <div class="panel-actions">
+              <button type="button" (click)="openNewRole()">
+                <svg [lucideIcon]="icons.plus" size="17"></svg>
+                Nuevo rol
+              </button>
+            </div>
+          </div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Nombre</th>
-                  <th>Email</th>
-                  <th>Aprobación</th>
-                  <th>Estado</th>
+                  <th>Nombre visible</th>
+                  <th>Nombre técnico</th>
+                  <th>Orden</th>
+                  <th>Funcionalidades</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                @for (user of users(); track user.id) {
+                @for (role of roles(); track role.id) {
                   <tr>
-                    <td>{{ user.fullName }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.isApproved ? 'Aprobado' : 'Pendiente' }}</td>
-                    <td>{{ user.isActive ? 'Activo' : 'Inactivo' }}</td>
+                    <td>{{ role.displayName }}</td>
+                    <td><code>{{ role.name }}</code></td>
+                    <td>{{ role.displayOrder }}</td>
+                    <td>
+                      <span class="roles-list" [title]="permissionDisplayText(role)">
+                        {{ permissionDisplayText(role) }}
+                      </span>
+                    </td>
                     <td class="row-actions">
-                      @if (!user.isApproved) {
-                        <button type="button" (click)="approveUserSubmit(user.id)">Aprobar</button>
-                      }
-                      <button type="button" (click)="setUserActiveSubmit(user.id, !user.isActive)">
-                        {{ user.isActive ? 'Desactivar' : 'Activar' }}
+                      <button type="button" (click)="openEditRole(role)">
+                        <svg [lucideIcon]="icons.editUser" size="17"></svg>
+                        Editar
                       </button>
+                      @if (role.name !== 'Admin' && role.name !== 'User') {
+                        <button class="secondary" type="button" (click)="deleteRoleSubmit(role)">
+                          Eliminar
+                        </button>
+                      }
                     </td>
                   </tr>
                 }
               </tbody>
             </table>
           </div>
-        }
-        <app-message [message]="message()"></app-message>
-      </section>
-    } @else {
-      <section class="panel">
-        <div class="panel-heading">
-          <h2>Reporte mensual</h2>
-        </div>
-        <form class="inline-form" (ngSubmit)="downloadMonthlyReport()">
+        </section>
+      } @else if (route() === '/reportes/eventos') {
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>Reporte mensual</h2>
+          </div>
+          <form class="inline-form" (ngSubmit)="downloadMonthlyReport()">
+            <label>
+              Mes
+              <input name="month" type="month" required [(ngModel)]="month" />
+            </label>
+            <button type="submit">Descargar Excel</button>
+          </form>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>Pedidos</h2>
+            <div class="steps" aria-label="Pasos">
+              <span class="step" [class.active]="ordersStep() === 1">1</span>
+              <span class="step" [class.active]="ordersStep() === 2">2</span>
+            </div>
+          </div>
+
+          @if (ordersStep() === 1) {
+            <form class="stack" (ngSubmit)="cleanOrders()">
+              <label>
+                Números de pedido
+                <textarea name="ordersText" rows="12" spellcheck="false" [(ngModel)]="ordersText"></textarea>
+              </label>
+              <div class="actions">
+                <button type="submit">Depurar</button>
+              </div>
+            </form>
+          } @else {
+            <form class="stack" (ngSubmit)="downloadOrdersReport()">
+              <div class="stats">
+                <span><strong>{{ pastedCount() }}</strong> pegados</span>
+                <span><strong>{{ normalizedOrders().length }}</strong> únicos</span>
+              </div>
+              <label>
+                Pedidos depurados
+                <textarea rows="12" readonly [value]="normalizedOrders().join('\n')"></textarea>
+              </label>
+              <div class="actions">
+                <button class="secondary" type="button" (click)="ordersStep.set(1)">Volver</button>
+                <button type="submit" [disabled]="submitting()">Descargar Excel</button>
+              </div>
+            </form>
+          }
+          <app-message [message]="message()"></app-message>
+        </section>
+      } @else {
+        <section class="panel empty-state">
+          <h2>Sin acceso</h2>
+          <p class="muted">Tu usuario no tiene módulos disponibles.</p>
+        </section>
+      }
+    </section>
+
+    @if (selectedUser()) {
+      <section class="drawer-backdrop" aria-label="Editar usuario">
+        <form class="drawer" (ngSubmit)="saveEditedUser()">
+          <div class="drawer-heading">
+            <h2>{{ selectedUser()?.isNew ? 'Nuevo usuario' : 'Editar usuario' }}</h2>
+            <button class="icon-button" type="button" aria-label="Cerrar" (click)="closeEditUser()">×</button>
+          </div>
+          @if (createdTemporaryPassword()) {
+            <section class="temporary-password">
+              <strong>Contraseña temporal</strong>
+              <code>{{ createdTemporaryPassword() }}</code>
+              <p>Entrégala al usuario por un canal seguro. Se pedirá cambio al iniciar sesión.</p>
+            </section>
+          }
           <label>
-            Mes
-            <input name="month" type="month" required [(ngModel)]="month" />
+            Nombre completo
+            <input name="editFullName" type="text" required [ngModel]="selectedUser()?.fullName" (ngModelChange)="updateSelectedUserField('fullName', $event)" />
           </label>
-          <button type="submit">Descargar Excel</button>
+          <label>
+            Email
+            <input name="editEmail" type="email" required [ngModel]="selectedUser()?.email" (ngModelChange)="updateSelectedUserField('email', $event)" />
+          </label>
+          <label class="check-row">
+            <input name="editApproved" type="checkbox" [ngModel]="selectedUser()?.isApproved" (ngModelChange)="updateSelectedUserField('isApproved', $event)" />
+            Aprobado
+          </label>
+          <label class="check-row">
+            <input name="editActive" type="checkbox" [ngModel]="selectedUser()?.isActive" (ngModelChange)="updateSelectedUserField('isActive', $event)" />
+            Activo
+          </label>
+          <label>
+            Buscar rol
+            <input name="roleSearch" type="search" [ngModel]="roleSearch()" (ngModelChange)="roleSearch.set($event)" />
+          </label>
+          <div class="role-picker">
+            @for (role of filteredRoles(); track role.name) {
+              <label class="check-row role-option">
+                <input
+                  type="checkbox"
+                  [name]="'role-' + role.name"
+                  [ngModel]="selectedUser()?.roleNames?.includes(role.name)"
+                  (ngModelChange)="toggleEditedRole(role.name, $event)" />
+                <span>{{ role.displayName }}</span>
+              </label>
+            }
+          </div>
+          <div class="actions">
+            <button class="secondary" type="button" (click)="closeEditUser()">Cancelar</button>
+            <button type="submit" [disabled]="submitting() || !!createdTemporaryPassword()">
+              {{ selectedUser()?.isNew ? 'Crear usuario' : 'Guardar cambios' }}
+            </button>
+          </div>
+          <app-message [message]="message()"></app-message>
         </form>
       </section>
+    }
 
-      <section class="panel">
-        <div class="panel-heading">
-          <h2>Pedidos</h2>
-          <div class="steps" aria-label="Pasos">
-            <span class="step" [class.active]="ordersStep() === 1">1</span>
-            <span class="step" [class.active]="ordersStep() === 2">2</span>
+    @if (selectedRole()) {
+      <section class="drawer-backdrop" aria-label="Editar rol">
+        <form class="drawer" (ngSubmit)="saveEditedRole()">
+          <div class="drawer-heading">
+            <h2>{{ selectedRole()?.isNew ? 'Nuevo rol' : 'Editar rol' }}</h2>
+            <button class="icon-button" type="button" aria-label="Cerrar" (click)="closeEditRole()">×</button>
           </div>
-        </div>
-
-        @if (ordersStep() === 1) {
-          <form class="stack" (ngSubmit)="cleanOrders()">
-            <label>
-              Números de pedido
-              <textarea name="ordersText" rows="12" spellcheck="false" [(ngModel)]="ordersText"></textarea>
-            </label>
-            <div class="actions">
-              <button type="submit">Depurar</button>
-            </div>
-          </form>
-        } @else {
-          <form class="stack" (ngSubmit)="downloadOrdersReport()">
-            <div class="stats">
-              <span><strong>{{ pastedCount() }}</strong> pegados</span>
-              <span><strong>{{ normalizedOrders().length }}</strong> únicos</span>
-            </div>
-            <label>
-              Pedidos depurados
-              <textarea rows="12" readonly [value]="normalizedOrders().join('\n')"></textarea>
-            </label>
-            <div class="actions">
-              <button class="secondary" type="button" (click)="ordersStep.set(1)">Volver</button>
-              <button type="submit" [disabled]="submitting()">Descargar Excel</button>
-            </div>
-          </form>
-        }
-        <app-message [message]="message()"></app-message>
+          <label>
+            Nombre visible
+            <input name="roleDisplayName" type="text" required [ngModel]="selectedRole()?.displayName" (ngModelChange)="updateSelectedRoleField('displayName', $event)" />
+          </label>
+          <label>
+            Nombre técnico
+            <input name="roleName" type="text" required [disabled]="!selectedRole()?.isNew && (selectedRole()?.name === 'Admin' || selectedRole()?.name === 'User')" [ngModel]="selectedRole()?.name" (ngModelChange)="updateSelectedRoleField('name', $event)" />
+          </label>
+          <label>
+            Orden visual
+            <input name="roleDisplayOrder" type="number" required [ngModel]="selectedRole()?.displayOrder" (ngModelChange)="updateSelectedRoleField('displayOrder', +$event)" />
+          </label>
+          <label>
+            Buscar funcionalidad
+            <input name="permissionSearch" type="search" [ngModel]="permissionSearch()" (ngModelChange)="permissionSearch.set($event)" />
+          </label>
+          <div class="role-picker">
+            @for (permission of filteredPermissions(); track permission) {
+              <label class="check-row role-option">
+                <input
+                  type="checkbox"
+                  [name]="'permission-' + permission"
+                  [ngModel]="selectedRole()?.permissions?.includes(permission)"
+                  (ngModelChange)="toggleEditedPermission(permission, $event)" />
+                <span>
+                  {{ permissionLabel(permission) }}
+                  <small>{{ permission }}</small>
+                </span>
+              </label>
+            }
+          </div>
+          <div class="actions">
+            <button class="secondary" type="button" (click)="closeEditRole()">Cancelar</button>
+            <button type="submit" [disabled]="submitting()">
+              {{ selectedRole()?.isNew ? 'Crear rol' : 'Guardar cambios' }}
+            </button>
+          </div>
+          <app-message [message]="message()"></app-message>
+        </form>
       </section>
     }
   </main>
