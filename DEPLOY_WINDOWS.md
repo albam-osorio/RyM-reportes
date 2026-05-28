@@ -21,6 +21,14 @@ En `C:\Services\RymReportes\appsettings.Production.json` debe quedar:
   "Urls": "http://0.0.0.0:5085",
   "Database": {
     "ConnectionString": ""
+  },
+  "Email": {
+    "SmtpHost": "smtp.gmail.com",
+    "SmtpPort": 587,
+    "UseStartTls": true,
+    "Username": "rym.application@gmail.com",
+    "Password": "",
+    "From": "rym.application@gmail.com"
   }
 }
 ```
@@ -29,6 +37,17 @@ Configura la cadena real como variable de entorno del sistema, fuera de git:
 
 ```powershell
 [Environment]::SetEnvironmentVariable("Database__ConnectionString", "<cadena-de-conexion-sql-server>", "Machine")
+```
+
+Cuando este disponible la app password de Gmail, configura tambien:
+
+```powershell
+[Environment]::SetEnvironmentVariable("Email__SmtpHost", "smtp.gmail.com", "Machine")
+[Environment]::SetEnvironmentVariable("Email__SmtpPort", "587", "Machine")
+[Environment]::SetEnvironmentVariable("Email__UseStartTls", "true", "Machine")
+[Environment]::SetEnvironmentVariable("Email__Username", "rym.application@gmail.com", "Machine")
+[Environment]::SetEnvironmentVariable("Email__Password", "<app-password-de-gmail>", "Machine")
+[Environment]::SetEnvironmentVariable("Email__From", "rym.application@gmail.com", "Machine")
 ```
 
 Despues de cambiar variables de entorno, reinicia el servicio si ya estaba instalado.
@@ -41,7 +60,23 @@ Abre PowerShell como administrador desde la carpeta donde descomprimiste el paqu
 .\scripts\install-service.ps1 -PublishPath C:\Services\RymReportes -Port 5085
 ```
 
-## 4. Probar
+## 4. Crear o rescatar administrador
+
+Desde `C:\Services\RymReportes`:
+
+```powershell
+.\RymReportes.Web.exe admin create --email admin@empresa.com --name "Administrador"
+```
+
+Si un administrador queda bloqueado o sin acceso al correo:
+
+```powershell
+.\RymReportes.Web.exe admin reset-password --email admin@empresa.com
+```
+
+El comando imprime una contrasena temporal y obliga el cambio al entrar.
+
+## 5. Probar
 
 Desde el servidor:
 
@@ -55,7 +90,7 @@ Desde otro equipo con acceso de red:
 http://NOMBRE-SERVIDOR:5085
 ```
 
-## 5. Desinstalar
+## 6. Desinstalar
 
 ```powershell
 .\scripts\uninstall-service.ps1

@@ -10,10 +10,14 @@ const backButton = document.querySelector("#back-button");
 const stepOneIndicator = document.querySelector("#step-one-indicator");
 const stepTwoIndicator = document.querySelector("#step-two-indicator");
 const toast = document.querySelector("#toast");
+const currentUser = document.querySelector("#current-user");
+const adminLink = document.querySelector("#admin-link");
+const logoutButton = document.querySelector("#logout-button");
 
 let normalizedOrders = [];
 
 monthInput.value = new Date().toISOString().slice(0, 7);
+loadCurrentUser();
 
 monthlyForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -74,6 +78,35 @@ stepTwoForm.addEventListener("submit", async (event) => {
 });
 
 backButton.addEventListener("click", () => setStep(1));
+logoutButton.addEventListener("click", async () => {
+  await fetch("/auth/logout", { method: "POST" });
+  window.location.href = "/login.html";
+});
+
+async function loadCurrentUser() {
+  try {
+    const response = await fetch("/auth/me");
+    if (response.status === 401) {
+      window.location.href = "/login.html";
+      return;
+    }
+
+    if (response.status === 403) {
+      window.location.href = "/force-password-change.html";
+      return;
+    }
+
+    if (!response.ok) {
+      return;
+    }
+
+    const user = await response.json();
+    currentUser.textContent = user.fullName || user.email;
+    adminLink.classList.toggle("hidden", !user.roles?.includes("Admin"));
+  } catch {
+    currentUser.textContent = "";
+  }
+}
 
 function splitOrders(value) {
   return value
@@ -132,6 +165,16 @@ function getFileName(contentDisposition) {
 }
 
 async function readError(response) {
+  if (response.status === 401) {
+    window.location.href = "/login.html";
+    return "Debes iniciar sesion.";
+  }
+
+  if (response.status === 403) {
+    window.location.href = "/force-password-change.html";
+    return "Debes cambiar tu contrasena antes de continuar.";
+  }
+
   try {
     const body = await response.json();
     return body.detail || "No se pudo generar el reporte.";

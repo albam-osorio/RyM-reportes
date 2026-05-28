@@ -22,21 +22,36 @@ public sealed class SqlEventReportRepository(IOptions<DatabaseOptions> options) 
                 SELECT
                     client_id,
                     shipment_number,
-                    order_number,
-                    event_type,
-                    entity_state,
-                    event_date,
-                    client_event_response_summary,
-                    created_at
-                FROM [rymdb].[dbo].[events]
-                WHERE order_number IN (
-                    SELECT order_number
-                    FROM [rymdb].[dbo].[events]
-                    WHERE ISNUMERIC(order_number) = 1
-                    AND created_at >= @StartDate
-                    AND created_at < @EndDate
-                )
-                AND entity_state <> 'DESCARTADO'
+                    order_number
+                FROM events
+                WHERE ISNUMERIC(order_number) = 1
+                AND created_at >= @StartDate
+                AND created_at < @EndDate
+            ),
+            cte_01 AS
+            (
+                SELECT
+                    a.client_id,
+                    a.shipment_number,
+                    a.order_number,
+                    a.event_type,
+                    a.entity_state,
+                    a.event_date,
+                    a.client_event_response_summary,
+                    a.created_at,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY a.client_id, a.shipment_number, a.order_number
+                    ORDER BY
+                        CASE a.event_type WHEN 'ENTREGA' THEN 0 ELSE 1 END,
+                        CASE a.entity_state WHEN 'PROCESADO' THEN 0 ELSE 1 END
+                    ) AS rownumber
+                FROM events a
+                INNER JOIN cte_00 b
+                    ON b.client_id = a.client_id
+                    AND b.shipment_number = a.shipment_number
+                    AND b.order_number = a.order_number
+                WHERE
+                    entity_state <> 'DESCARTADO'
             )
             SELECT
                 client_id AS nit,
@@ -47,7 +62,8 @@ public sealed class SqlEventReportRepository(IOptions<DatabaseOptions> options) 
                 entity_state AS resultado_integracion,
                 client_event_response_summary AS respuesta_natura,
                 created_at AS reportador_por_sisifo
-            FROM cte_00 a
+            FROM cte_01 a
+            WHERE rownumber = 1
             ORDER BY
                 client_id,
                 shipment_number,
@@ -95,7 +111,7 @@ public sealed class SqlEventReportRepository(IOptions<DatabaseOptions> options) 
                     e.event_date,
                     e.client_event_response_summary,
                     e.created_at
-                FROM [rymdb].[dbo].[events] e
+                FROM events e
                 INNER JOIN @OrderNumbers o
                     ON o.order_number = e.order_number
                 WHERE e.entity_state <> 'DESCARTADO'

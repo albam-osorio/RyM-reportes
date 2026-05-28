@@ -1,74 +1,84 @@
 <!doctype html>
 <html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>RYM Reportes</title>
-  <link rel="stylesheet" href="/styles.css">
-</head>
-<body>
-  <main class="shell">
-    <header class="page-header">
-      <div class="brand-lockup">
-        <img class="brand-logo" src="/assets/logo-remesas-mensajes.png" alt="Remesas y Mensajes">
-        <div>
-          <p class="eyebrow">Natura</p>
-          <h1>Reportes de eventos</h1>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RYM Reportes</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="page-header">
+        <div class="brand-lockup">
+          <img
+            class="brand-logo"
+            src="/assets/logo-remesas-mensajes.png"
+            alt="Remesas y Mensajes"
+          />
+          <div>
+            <h1>Reportes de eventos</h1>
+          </div>
         </div>
-      </div>
-    </header>
-
-    <section class="panel">
-      <div class="panel-heading">
-        <h2>Reporte mensual</h2>
-      </div>
-      <form id="monthly-form" class="inline-form">
-        <label>
-          Mes
-          <input id="month" name="month" type="month" required>
-        </label>
-        <button type="submit">Descargar Excel</button>
-      </form>
-    </section>
-
-    <section class="panel">
-      <div class="panel-heading">
-        <h2>Pedidos</h2>
-        <div class="steps" aria-label="Pasos">
-          <span id="step-one-indicator" class="step active">1</span>
-          <span id="step-two-indicator" class="step">2</span>
+        <div class="top-actions">
+          <a id="admin-link" class="text-link hidden" href="/admin/users.html">Usuarios</a>
+          <span id="current-user" class="user-pill"></span>
+          <button id="logout-button" class="secondary" type="button">Salir</button>
         </div>
-      </div>
+      </header>
 
-      <form id="orders-step-one" class="stack">
-        <label>
-          Numeros de pedido
-          <textarea id="orders-input" rows="12" spellcheck="false"></textarea>
-        </label>
-        <div class="actions">
-          <button type="submit">Depurar</button>
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>Reporte mensual</h2>
         </div>
-      </form>
-
-      <form id="orders-step-two" class="stack hidden">
-        <div class="stats">
-          <span><strong id="pasted-count">0</strong> pegados</span>
-          <span><strong id="unique-count">0</strong> unicos</span>
-        </div>
-        <label>
-          Pedidos depurados
-          <textarea id="orders-preview" rows="12" readonly></textarea>
-        </label>
-        <div class="actions">
-          <button id="back-button" type="button" class="secondary">Volver</button>
+        <form id="monthly-form" class="inline-form">
+          <label>
+            Mes
+            <input id="month" name="month" type="month" required />
+          </label>
           <button type="submit">Descargar Excel</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>Pedidos</h2>
+          <div class="steps" aria-label="Pasos">
+            <span id="step-one-indicator" class="step active">1</span>
+            <span id="step-two-indicator" class="step">2</span>
+          </div>
         </div>
-      </form>
-    </section>
-  </main>
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+        <form id="orders-step-one" class="stack">
+          <label>
+            Numeros de pedido
+            <textarea id="orders-input" rows="12" spellcheck="false"></textarea>
+          </label>
+          <div class="actions">
+            <button type="submit">Depurar</button>
+          </div>
+        </form>
 
-  <script src="/app.js"></script>
-</body>
+        <form id="orders-step-two" class="stack hidden">
+          <div class="stats">
+            <span><strong id="pasted-count">0</strong> pegados</span>
+            <span><strong id="unique-count">0</strong> unicos</span>
+          </div>
+          <label>
+            Pedidos depurados
+            <textarea id="orders-preview" rows="12" readonly></textarea>
+          </label>
+          <div class="actions">
+            <button id="back-button" type="button" class="secondary">
+              Volver
+            </button>
+            <button type="submit">Descargar Excel</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="/app.js"></script>
+  </body>
 </html>
