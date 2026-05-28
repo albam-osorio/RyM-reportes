@@ -19,7 +19,7 @@ public sealed class ReportFileService(
         var content = excelGenerator.Generate(rows, $"Reporte de eventos {month}");
 
         return new GeneratedReportFile(
-            $"reporte-eventos-{month}.xlsx",
+            CreateMonthlyFileName(month, DateTime.Now),
             ExcelContentType,
             content,
             rows.Count);
@@ -44,4 +44,7 @@ public sealed class ReportFileService(
             content,
             rows.Count);
     }
+
+    public static string CreateMonthlyFileName(YearMonth month, DateTime generatedAt) =>
+        $"reporte-eventos-{month}-{generatedAt:yyyyMMdd-HHmm}.xlsx";
 }

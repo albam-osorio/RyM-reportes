@@ -74,3 +74,16 @@ public class ClosedXmlReportExcelGeneratorTests
         Assert.Equal((byte)'K', content[1]);
     }
 }
+
+public class ReportFileServiceTests
+{
+    [Fact]
+    public void CreateMonthlyFileNameIncludesGenerationDateAndTime()
+    {
+        var fileName = ReportFileService.CreateMonthlyFileName(
+            new YearMonth(2026, 5),
+            new DateTime(2026, 5, 28, 15, 7, 33));
+
+        Assert.Equal("reporte-eventos-2026-05-20260528-1507.xlsx", fileName);
+    }
+}
