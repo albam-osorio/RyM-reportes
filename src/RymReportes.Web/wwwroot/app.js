@@ -79,8 +79,20 @@ stepTwoForm.addEventListener("submit", async (event) => {
 
 backButton.addEventListener("click", () => setStep(1));
 logoutButton.addEventListener("click", async () => {
-  await fetch("/auth/logout", { method: "POST" });
-  window.location.href = "/login.html";
+  try {
+    const response = await fetch("/auth/logout", {
+      method: "POST",
+      credentials: "same-origin"
+    });
+
+    if (!response.ok && response.status !== 401) {
+      throw new Error("No se pudo cerrar la sesión.");
+    }
+
+    window.location.href = "/login.html";
+  } catch (error) {
+    showToast(error.message || "No se pudo cerrar la sesión.");
+  }
 });
 
 async function loadCurrentUser() {
@@ -167,12 +179,12 @@ function getFileName(contentDisposition) {
 async function readError(response) {
   if (response.status === 401) {
     window.location.href = "/login.html";
-    return "Debes iniciar sesion.";
+    return "Debes iniciar sesión.";
   }
 
   if (response.status === 403) {
     window.location.href = "/force-password-change.html";
-    return "Debes cambiar tu contrasena antes de continuar.";
+    return "Debes cambiar tu contraseña antes de continuar.";
   }
 
   try {

@@ -127,7 +127,7 @@ app.Use(async (context, next) =>
         }
 
         context.Response.StatusCode = StatusCodes.Status403Forbidden;
-        await context.Response.WriteAsJsonAsync(new ProblemDetailsResponse("Debe cambiar su contrasena antes de continuar."));
+        await context.Response.WriteAsJsonAsync(new ProblemDetailsResponse("Debe cambiar su contraseña antes de continuar."));
         return;
     }
 
@@ -152,7 +152,7 @@ app.MapPost("/auth/register", async (
         || string.IsNullOrWhiteSpace(request.FullName)
         || string.IsNullOrWhiteSpace(request.Password))
     {
-        return Results.BadRequest(new ProblemDetailsResponse("Email, nombre y contrasena son obligatorios."));
+        return Results.BadRequest(new ProblemDetailsResponse("Email, nombre y contraseña son obligatorios."));
     }
 
     var email = request.Email.Trim();
@@ -185,19 +185,19 @@ app.MapPost("/auth/login", async (
 {
     if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
     {
-        return Results.BadRequest(new ProblemDetailsResponse("Email y contrasena son obligatorios."));
+        return Results.BadRequest(new ProblemDetailsResponse("Email y contraseña son obligatorios."));
     }
 
     var user = await userManager.FindByEmailAsync(request.Email.Trim());
     if (user is null)
     {
-        return Results.BadRequest(new ProblemDetailsResponse("Email o contrasena invalidos."));
+        return Results.BadRequest(new ProblemDetailsResponse("Email o contraseña inválidos."));
     }
 
     var passwordResult = await signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
     if (!passwordResult.Succeeded)
     {
-        return Results.BadRequest(new ProblemDetailsResponse("Email o contrasena invalidos."));
+        return Results.BadRequest(new ProblemDetailsResponse("Email o contraseña inválidos."));
     }
 
     if (!user.IsApproved)
@@ -308,7 +308,7 @@ app.MapPost("/auth/change-password", async (
 {
     if (string.IsNullOrWhiteSpace(request.CurrentPassword) || string.IsNullOrWhiteSpace(request.NewPassword))
     {
-        return Results.BadRequest(new ProblemDetailsResponse("Contrasena actual y nueva son obligatorias."));
+        return Results.BadRequest(new ProblemDetailsResponse("Contraseña actual y nueva son obligatorias."));
     }
 
     var user = await userManager.GetUserAsync(principal);

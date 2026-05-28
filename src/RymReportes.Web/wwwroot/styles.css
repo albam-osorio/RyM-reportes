@@ -188,6 +188,36 @@ textarea:focus {
   box-shadow: 0 0 0 3px rgb(227 37 34 / 0.16);
 }
 
+.password-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  width: 100%;
+}
+
+.password-field input {
+  min-width: 0;
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.password-toggle {
+  width: auto;
+  min-height: 42px;
+  border-color: var(--border);
+  border-left: 0;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  background: #fff;
+  color: var(--accent-strong);
+  padding: 0 12px;
+}
+
+.password-toggle:hover {
+  border-color: var(--accent-strong);
+  background: #fff6f6;
+  color: var(--accent-dark);
+}
+
 button {
   display: inline-flex;
   align-items: center;

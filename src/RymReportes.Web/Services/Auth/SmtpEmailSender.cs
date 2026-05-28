@@ -26,14 +26,14 @@ public sealed class SmtpEmailSender(
         var message = new MimeMessage();
         message.From.Add(MailboxAddress.Parse(_options.From));
         message.To.Add(MailboxAddress.Parse(to));
-        message.Subject = "Restablecer contrasena - RYM Reportes";
+        message.Subject = "Restablecer contraseña - RYM Reportes";
 
         var builder = new BodyBuilder
         {
             TextBody = $"""
-                Se solicito restablecer la contrasena de tu cuenta en RYM Reportes.
+                Se solicitó restablecer la contraseña de tu cuenta en RYM Reportes.
 
-                Abre este enlace para crear una nueva contrasena:
+                Abre este enlace para crear una nueva contraseña:
                 {resetUrl}
 
                 Si no solicitaste este cambio, puedes ignorar este correo.

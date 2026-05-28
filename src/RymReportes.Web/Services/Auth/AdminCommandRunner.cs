@@ -74,7 +74,7 @@ public sealed class AdminCommandRunner(
         }
 
         logger.LogInformation("Admin listo: {Email}", email);
-        logger.LogInformation("Contrasena temporal: {Password}", password);
+        logger.LogInformation("Contraseña temporal: {Password}", password);
         return 0;
     }
 
@@ -110,7 +110,7 @@ public sealed class AdminCommandRunner(
         user.EmailConfirmed = true;
         await userManager.UpdateAsync(user);
 
-        logger.LogInformation("Contrasena temporal para {Email}: {Password}", email, password);
+        logger.LogInformation("Contraseña temporal para {Email}: {Password}", email, password);
         return 0;
     }
 

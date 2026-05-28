@@ -2,6 +2,8 @@ const form = document.querySelector("form[data-auth-form]");
 const message = document.querySelector("#message");
 const logoutButton = document.querySelector("#logout-button");
 
+initPasswordToggles();
+
 if (form) {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -22,8 +24,20 @@ if (form) {
 
 if (logoutButton) {
   logoutButton.addEventListener("click", async () => {
-    await fetch("/auth/logout", { method: "POST" });
-    window.location.href = "/login.html";
+    try {
+      const response = await fetch("/auth/logout", {
+        method: "POST",
+        credentials: "same-origin"
+      });
+
+      if (!response.ok && response.status !== 401) {
+        throw new Error("No se pudo cerrar la sesión.");
+      }
+
+      window.location.href = "/login.html";
+    } catch (error) {
+      showMessage(error.message || "No se pudo cerrar la sesión.", true);
+    }
   });
 }
 
@@ -57,7 +71,7 @@ async function handleForm(currentForm) {
       password: field("password"),
       rememberMe: document.querySelector("#rememberMe")?.checked === true
     });
-    await ensureOk(response, "Email o contrasena invalidos.");
+    await ensureOk(response, "Email o contraseña inválidos.");
     const body = await response.json();
     window.location.href = body.mustChangePassword ? "/force-password-change.html" : "/";
     return;
@@ -68,7 +82,7 @@ async function handleForm(currentForm) {
       email: field("email")
     });
     await ensureOk(response, "No se pudo enviar el correo.");
-    showMessage("Si el usuario existe y esta activo, recibira un correo de reinicio.");
+    showMessage("Si el usuario existe y está activo, recibirá un correo de reinicio.");
     currentForm.reset();
     return;
   }
@@ -79,8 +93,8 @@ async function handleForm(currentForm) {
       token: field("token"),
       password: field("password")
     });
-    await ensureOk(response, "No se pudo cambiar la contrasena.");
-    showMessage("Contrasena actualizada. Ya puedes iniciar sesion.");
+    await ensureOk(response, "No se pudo cambiar la contraseña.");
+    showMessage("Contraseña actualizada. Ya puedes iniciar sesión.");
     setTimeout(() => {
       window.location.href = "/login.html";
     }, 1200);
@@ -92,7 +106,7 @@ async function handleForm(currentForm) {
       currentPassword: field("currentPassword"),
       newPassword: field("newPassword")
     });
-    await ensureOk(response, "No se pudo cambiar la contrasena.");
+    await ensureOk(response, "No se pudo cambiar la contraseña.");
     window.location.href = "/";
   }
 }
@@ -160,6 +174,7 @@ function field(name) {
 async function postJson(url, body) {
   return fetch(url, {
     method: "POST",
+    credentials: "same-origin",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body)
   });
@@ -205,4 +220,29 @@ function escapeHtml(value) {
     "\"": "&quot;",
     "'": "&#039;"
   })[character]);
+}
+
+function initPasswordToggles() {
+  for (const input of document.querySelectorAll("input[type='password']")) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "password-field";
+    input.parentNode.insertBefore(wrapper, input);
+    wrapper.appendChild(input);
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "password-toggle";
+    button.textContent = "Mostrar";
+    button.setAttribute("aria-label", "Mostrar contraseña");
+
+    button.addEventListener("click", () => {
+      const shouldShow = input.type === "password";
+      input.type = shouldShow ? "text" : "password";
+      button.textContent = shouldShow ? "Ocultar" : "Mostrar";
+      button.setAttribute("aria-label", shouldShow ? "Ocultar contraseña" : "Mostrar contraseña");
+      input.focus();
+    });
+
+    wrapper.appendChild(button);
+  }
 }
