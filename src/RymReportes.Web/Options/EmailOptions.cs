@@ -14,9 +14,9 @@ public sealed class EmailOptions
 
     public bool UseStartTls { get; set; } = true;
 
-    public string Username { get; set; } = "rym.application@gmail.com";
+    public string Username { get; set; } = string.Empty;
 
     public string Password { get; set; } = string.Empty;
 
-    public string From { get; set; } = "rym.application@gmail.com";
+    public string From { get; set; } = string.Empty;
 }
