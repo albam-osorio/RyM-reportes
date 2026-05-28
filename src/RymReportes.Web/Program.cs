@@ -59,7 +59,6 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AdminOnly", policy => policy.RequireRole(AppRoles.Admin));
 });
 
-builder.Services.AddSingleton<ReportPeriodCalculator>();
 builder.Services.AddSingleton<OrderNumberNormalizer>();
 builder.Services.AddSingleton<IReportExcelGenerator, ClosedXmlReportExcelGenerator>();
 builder.Services.AddScoped<IEventReportRepository, SqlEventReportRepository>();

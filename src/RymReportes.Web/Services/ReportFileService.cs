@@ -3,7 +3,6 @@ using RymReportes.Web.Models;
 namespace RymReportes.Web.Services;
 
 public sealed class ReportFileService(
-    ReportPeriodCalculator periodCalculator,
     OrderNumberNormalizer orderNumberNormalizer,
     IEventReportRepository repository,
     IReportExcelGenerator excelGenerator) : IReportFileService
@@ -14,7 +13,7 @@ public sealed class ReportFileService(
         YearMonth month,
         CancellationToken cancellationToken)
     {
-        var period = periodCalculator.GetMonthPeriod(month);
+        var period = MonthPeriod.FromYearMonth(month);
         var rows = await repository.GetMonthlyReportAsync(period, cancellationToken);
         var content = excelGenerator.Generate(rows, $"Reporte de eventos {month}");
 
