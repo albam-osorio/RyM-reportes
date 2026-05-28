@@ -1,0 +1,22 @@
+{
+  "/auth": {
+    "target": "http://localhost:5085",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/admin": {
+    "target": "http://localhost:5085",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/reportes": {
+    "target": "http://localhost:5085",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/health": {
+    "target": "http://localhost:5085",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

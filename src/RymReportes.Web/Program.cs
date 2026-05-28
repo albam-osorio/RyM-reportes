@@ -46,8 +46,8 @@ builder.Services
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/login.html";
-    options.AccessDeniedPath = "/login.html";
+    options.LoginPath = "/login";
+    options.AccessDeniedPath = "/login";
     options.Cookie.Name = "RymReportes.Auth";
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.Strict;
@@ -81,33 +81,8 @@ using (var scope = app.Services.CreateScope())
     await scope.ServiceProvider.GetRequiredService<IdentitySeedService>().InitializeAsync(CancellationToken.None);
 }
 
+app.UseStaticFiles();
 app.UseAuthentication();
-app.Use(async (context, next) =>
-{
-    if (context.Request.Path.Equals("/index.html", StringComparison.OrdinalIgnoreCase)
-        && context.User.Identity?.IsAuthenticated != true)
-    {
-        context.Response.Redirect("/login.html");
-        return;
-    }
-
-    if (context.Request.Path.Equals("/admin/users.html", StringComparison.OrdinalIgnoreCase))
-    {
-        if (context.User.Identity?.IsAuthenticated != true)
-        {
-            context.Response.Redirect("/login.html");
-            return;
-        }
-
-        if (!context.User.IsInRole(AppRoles.Admin))
-        {
-            context.Response.Redirect("/");
-            return;
-        }
-    }
-
-    await next();
-});
 app.Use(async (context, next) =>
 {
     if (context.User.Identity?.IsAuthenticated != true || IsPasswordChangeAllowedPath(context.Request.Path))
@@ -122,7 +97,7 @@ app.Use(async (context, next) =>
     {
         if (IsHtmlRequest(context.Request))
         {
-            context.Response.Redirect("/force-password-change.html");
+            context.Response.Redirect("/force-password-change");
             return;
         }
 
@@ -133,7 +108,6 @@ app.Use(async (context, next) =>
 
     await next();
 });
-app.UseStaticFiles();
 app.UseAuthorization();
 
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
@@ -437,6 +411,8 @@ app.MapPost("/reportes/pedidos/download", async (
     }
 }).RequireAuthorization();
 
+app.MapFallbackToFile("index.html");
+
 app.Run();
 
 static bool IsHtmlRequest(HttpRequest request) =>
@@ -446,11 +422,11 @@ static bool IsPasswordChangeAllowedPath(PathString path) =>
     path.StartsWithSegments("/auth/change-password")
     || path.StartsWithSegments("/auth/logout")
     || path.StartsWithSegments("/auth/me")
-    || path.StartsWithSegments("/force-password-change.html")
-    || path.StartsWithSegments("/login.html")
-    || path.StartsWithSegments("/styles.css")
-    || path.StartsWithSegments("/auth.js")
-    || path.StartsWithSegments("/assets")
+    || path.StartsWithSegments("/force-password-change")
+    || path.StartsWithSegments("/login")
+    || path.StartsWithSegments("/register")
+    || path.StartsWithSegments("/forgot-password")
+    || path.StartsWithSegments("/reset-password")
     || path.StartsWithSegments("/health");
 
 public sealed record OrdersReportRequest(IReadOnlyList<string> OrderNumbers);

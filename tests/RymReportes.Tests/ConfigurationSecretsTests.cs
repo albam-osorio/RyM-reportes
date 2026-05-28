@@ -3,7 +3,7 @@ namespace RymReportes.Tests;
 public class ConfigurationSecretsTests
 {
     private static readonly string[] FilePatterns = ["*.json", "*.md", "*.ps1", "*.rds", "*.rptproj"];
-    private static readonly string[] ExcludedDirectories = [".git", "bin", "obj", "artifacts"];
+    private static readonly string[] ExcludedDirectories = [".git", "bin", "obj", "artifacts", "node_modules"];
     private static readonly string[] ForbiddenSnippets =
     [
         "Password" + "=remesas",

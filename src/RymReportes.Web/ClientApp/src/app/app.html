@@ -1,0 +1,268 @@
+@if (loadingSession()) {
+  <main class="auth-page">
+    <div class="auth-shell">
+      <img class="auth-logo" src="/logo-remesas-mensajes.png" alt="Remesas y Mensajes" />
+      <p class="loading-text">Cargando...</p>
+    </div>
+  </main>
+} @else if (route() === '/login') {
+  <main class="auth-page">
+    <div class="auth-shell">
+      <img class="auth-logo" src="/logo-remesas-mensajes.png" alt="Remesas y Mensajes" />
+      <section class="auth-panel">
+        <h1>Iniciar sesión</h1>
+        <form class="stack" (ngSubmit)="loginSubmit()">
+          <label>
+            Email
+            <input name="email" type="email" autocomplete="email" required [(ngModel)]="loginForm.email" />
+          </label>
+          <label>
+            Contraseña
+            <span class="password-field">
+              <input name="password" [type]="passwordVisible().login ? 'text' : 'password'" autocomplete="current-password" required [(ngModel)]="loginForm.password" />
+              <button class="password-toggle" type="button" [attr.aria-label]="passwordVisible().login ? 'Ocultar contraseña' : 'Mostrar contraseña'" (click)="togglePassword('login')">
+                {{ passwordVisible().login ? 'Ocultar' : 'Mostrar' }}
+              </button>
+            </span>
+          </label>
+          <label class="check-row">
+            <input name="rememberMe" type="checkbox" [(ngModel)]="loginForm.rememberMe" />
+            Mantener sesión
+          </label>
+          <button type="submit" [disabled]="submitting()">Entrar</button>
+        </form>
+        <app-message [message]="message()"></app-message>
+        <div class="auth-links">
+          <button class="link-button" type="button" (click)="go('/register')">Solicitar usuario</button>
+          <button class="link-button" type="button" (click)="go('/forgot-password')">Olvidé mi contraseña</button>
+        </div>
+      </section>
+    </div>
+  </main>
+} @else if (route() === '/register') {
+  <main class="auth-page">
+    <div class="auth-shell">
+      <img class="auth-logo" src="/logo-remesas-mensajes.png" alt="Remesas y Mensajes" />
+      <section class="auth-panel">
+        <h1>Solicitar usuario</h1>
+        <form class="stack" (ngSubmit)="registerSubmit()">
+          <label>
+            Nombre completo
+            <input name="fullName" type="text" autocomplete="name" required [(ngModel)]="registerForm.fullName" />
+          </label>
+          <label>
+            Email
+            <input name="email" type="email" autocomplete="email" required [(ngModel)]="registerForm.email" />
+          </label>
+          <label>
+            Contraseña
+            <span class="password-field">
+              <input name="password" [type]="passwordVisible().register ? 'text' : 'password'" autocomplete="new-password" required [(ngModel)]="registerForm.password" />
+              <button class="password-toggle" type="button" [attr.aria-label]="passwordVisible().register ? 'Ocultar contraseña' : 'Mostrar contraseña'" (click)="togglePassword('register')">
+                {{ passwordVisible().register ? 'Ocultar' : 'Mostrar' }}
+              </button>
+            </span>
+          </label>
+          <button type="submit" [disabled]="submitting()">Enviar solicitud</button>
+        </form>
+        <app-message [message]="message()"></app-message>
+        <div class="auth-links">
+          <button class="link-button" type="button" (click)="go('/login')">Volver al inicio</button>
+        </div>
+      </section>
+    </div>
+  </main>
+} @else if (route() === '/forgot-password') {
+  <main class="auth-page">
+    <div class="auth-shell">
+      <img class="auth-logo" src="/logo-remesas-mensajes.png" alt="Remesas y Mensajes" />
+      <section class="auth-panel">
+        <h1>Recuperar contraseña</h1>
+        <form class="stack" (ngSubmit)="forgotPasswordSubmit()">
+          <label>
+            Email
+            <input name="email" type="email" autocomplete="email" required [(ngModel)]="forgotPasswordEmail" />
+          </label>
+          <button type="submit" [disabled]="submitting()">Enviar correo</button>
+        </form>
+        <app-message [message]="message()"></app-message>
+        <div class="auth-links">
+          <button class="link-button" type="button" (click)="go('/login')">Volver al inicio</button>
+        </div>
+      </section>
+    </div>
+  </main>
+} @else if (route() === '/reset-password') {
+  <main class="auth-page">
+    <div class="auth-shell">
+      <img class="auth-logo" src="/logo-remesas-mensajes.png" alt="Remesas y Mensajes" />
+      <section class="auth-panel">
+        <h1>Nueva contraseña</h1>
+        <form class="stack" (ngSubmit)="resetPasswordSubmit()">
+          <label>
+            Email
+            <input name="email" type="email" autocomplete="email" required [(ngModel)]="resetForm.email" />
+          </label>
+          <label>
+            Nueva contraseña
+            <span class="password-field">
+              <input name="password" [type]="passwordVisible().reset ? 'text' : 'password'" autocomplete="new-password" required [(ngModel)]="resetForm.password" />
+              <button class="password-toggle" type="button" [attr.aria-label]="passwordVisible().reset ? 'Ocultar contraseña' : 'Mostrar contraseña'" (click)="togglePassword('reset')">
+                {{ passwordVisible().reset ? 'Ocultar' : 'Mostrar' }}
+              </button>
+            </span>
+          </label>
+          <button type="submit" [disabled]="submitting()">Guardar</button>
+        </form>
+        <app-message [message]="message()"></app-message>
+      </section>
+    </div>
+  </main>
+} @else if (route() === '/force-password-change') {
+  <main class="auth-page">
+    <div class="auth-shell">
+      <img class="auth-logo" src="/logo-remesas-mensajes.png" alt="Remesas y Mensajes" />
+      <section class="auth-panel">
+        <h1>Cambiar contraseña</h1>
+        <form class="stack" (ngSubmit)="changePasswordSubmit()">
+          <label>
+            Contraseña actual
+            <span class="password-field">
+              <input name="currentPassword" [type]="passwordVisible().current ? 'text' : 'password'" autocomplete="current-password" required [(ngModel)]="changeForm.currentPassword" />
+              <button class="password-toggle" type="button" [attr.aria-label]="passwordVisible().current ? 'Ocultar contraseña' : 'Mostrar contraseña'" (click)="togglePassword('current')">
+                {{ passwordVisible().current ? 'Ocultar' : 'Mostrar' }}
+              </button>
+            </span>
+          </label>
+          <label>
+            Nueva contraseña
+            <span class="password-field">
+              <input name="newPassword" [type]="passwordVisible().new ? 'text' : 'password'" autocomplete="new-password" required [(ngModel)]="changeForm.newPassword" />
+              <button class="password-toggle" type="button" [attr.aria-label]="passwordVisible().new ? 'Ocultar contraseña' : 'Mostrar contraseña'" (click)="togglePassword('new')">
+                {{ passwordVisible().new ? 'Ocultar' : 'Mostrar' }}
+              </button>
+            </span>
+          </label>
+          <button type="submit" [disabled]="submitting()">Actualizar</button>
+        </form>
+        <app-message [message]="message()"></app-message>
+        <div class="auth-links">
+          <button class="link-button" type="button" (click)="logoutSubmit()">Salir</button>
+        </div>
+      </section>
+    </div>
+  </main>
+} @else {
+  <main class="shell">
+    <header class="page-header">
+      <button class="brand-lockup brand-button" type="button" (click)="go('/')">
+        <img class="brand-logo" src="/logo-remesas-mensajes.png" alt="Remesas y Mensajes" />
+        <span class="brand-title">Reportes de eventos</span>
+      </button>
+      <div class="top-actions">
+        @if (isAdmin()) {
+          <button class="text-link" type="button" (click)="go('/usuarios')">Usuarios</button>
+        }
+        <span class="user-pill">{{ session()?.fullName || session()?.email }}</span>
+        <button class="secondary" type="button" (click)="logoutSubmit()">Salir</button>
+      </div>
+    </header>
+
+    @if (route() === '/usuarios') {
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>Usuarios</h2>
+        </div>
+        @if (!isAdmin()) {
+          <p class="muted">Tu usuario no tiene permisos para administrar usuarios.</p>
+        } @else if (loadingUsers()) {
+          <p class="muted">Cargando usuarios...</p>
+        } @else {
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Aprobación</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (user of users(); track user.id) {
+                  <tr>
+                    <td>{{ user.fullName }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.isApproved ? 'Aprobado' : 'Pendiente' }}</td>
+                    <td>{{ user.isActive ? 'Activo' : 'Inactivo' }}</td>
+                    <td class="row-actions">
+                      @if (!user.isApproved) {
+                        <button type="button" (click)="approveUserSubmit(user.id)">Aprobar</button>
+                      }
+                      <button type="button" (click)="setUserActiveSubmit(user.id, !user.isActive)">
+                        {{ user.isActive ? 'Desactivar' : 'Activar' }}
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+        <app-message [message]="message()"></app-message>
+      </section>
+    } @else {
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>Reporte mensual</h2>
+        </div>
+        <form class="inline-form" (ngSubmit)="downloadMonthlyReport()">
+          <label>
+            Mes
+            <input name="month" type="month" required [(ngModel)]="month" />
+          </label>
+          <button type="submit">Descargar Excel</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>Pedidos</h2>
+          <div class="steps" aria-label="Pasos">
+            <span class="step" [class.active]="ordersStep() === 1">1</span>
+            <span class="step" [class.active]="ordersStep() === 2">2</span>
+          </div>
+        </div>
+
+        @if (ordersStep() === 1) {
+          <form class="stack" (ngSubmit)="cleanOrders()">
+            <label>
+              Números de pedido
+              <textarea name="ordersText" rows="12" spellcheck="false" [(ngModel)]="ordersText"></textarea>
+            </label>
+            <div class="actions">
+              <button type="submit">Depurar</button>
+            </div>
+          </form>
+        } @else {
+          <form class="stack" (ngSubmit)="downloadOrdersReport()">
+            <div class="stats">
+              <span><strong>{{ pastedCount() }}</strong> pegados</span>
+              <span><strong>{{ normalizedOrders().length }}</strong> únicos</span>
+            </div>
+            <label>
+              Pedidos depurados
+              <textarea rows="12" readonly [value]="normalizedOrders().join('\n')"></textarea>
+            </label>
+            <div class="actions">
+              <button class="secondary" type="button" (click)="ordersStep.set(1)">Volver</button>
+              <button type="submit" [disabled]="submitting()">Descargar Excel</button>
+            </div>
+          </form>
+        }
+        <app-message [message]="message()"></app-message>
+      </section>
+    }
+  </main>
+}

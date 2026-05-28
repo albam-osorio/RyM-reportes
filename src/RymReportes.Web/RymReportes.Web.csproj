@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>e1f0eb0e-63a8-42b6-828d-75c5e19e989a</UserSecretsId>
+    <SpaRoot>ClientApp\</SpaRoot>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,5 +20,10 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.8" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="10.0.8" />
   </ItemGroup>
+
+  <Target Name="BuildClientApp" BeforeTargets="ComputeFilesToPublish">
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm ci" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+  </Target>
 
 </Project>

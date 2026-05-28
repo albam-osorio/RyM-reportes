@@ -27,6 +27,12 @@ body {
   color: var(--text);
 }
 
+button,
+input,
+textarea {
+  font: inherit;
+}
+
 .shell {
   width: min(1120px, calc(100vw - 32px));
   margin: 0 auto;
@@ -49,10 +55,31 @@ body {
   gap: 22px;
 }
 
+.brand-button {
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.brand-button:hover {
+  background: transparent;
+}
+
 .brand-logo {
   width: clamp(160px, 24vw, 260px);
   height: auto;
   flex: 0 0 auto;
+}
+
+.brand-title {
+  color: var(--ink);
+  font-size: clamp(1.8rem, 4vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1;
 }
 
 .top-actions {
@@ -77,7 +104,6 @@ body {
 }
 
 .text-link,
-.auth-links a,
 .link-button {
   color: var(--accent-strong);
   font: inherit;
@@ -86,19 +112,9 @@ body {
 }
 
 .text-link:hover,
-.auth-links a:hover,
 .link-button:hover {
   color: var(--accent-dark);
   text-decoration: underline;
-}
-
-.eyebrow {
-  margin: 0 0 4px;
-  color: var(--accent-strong);
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0;
-  text-transform: uppercase;
 }
 
 h1,
@@ -163,7 +179,6 @@ textarea {
   border-radius: 6px;
   background: var(--surface-soft);
   color: var(--text);
-  font: inherit;
   font-weight: 500;
   outline: none;
 }
@@ -200,24 +215,6 @@ textarea:focus {
   border-top-right-radius: 0;
 }
 
-.password-toggle {
-  width: auto;
-  min-height: 42px;
-  border-color: var(--border);
-  border-left: 0;
-  border-bottom-left-radius: 0;
-  border-top-left-radius: 0;
-  background: #fff;
-  color: var(--accent-strong);
-  padding: 0 12px;
-}
-
-.password-toggle:hover {
-  border-color: var(--accent-strong);
-  background: #fff6f6;
-  color: var(--accent-dark);
-}
-
 button {
   display: inline-flex;
   align-items: center;
@@ -228,7 +225,6 @@ button {
   background: var(--accent);
   color: #fff;
   padding: 0 16px;
-  font: inherit;
   font-weight: 800;
   cursor: pointer;
 }
@@ -253,6 +249,24 @@ button.secondary:hover {
 button:disabled {
   cursor: wait;
   opacity: 0.7;
+}
+
+.password-toggle {
+  width: auto;
+  min-height: 42px;
+  border-color: var(--border);
+  border-left: 0;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  background: #fff;
+  color: var(--accent-strong);
+  padding: 0 12px;
+}
+
+.password-toggle:hover {
+  border-color: var(--accent-strong);
+  background: #fff6f6;
+  color: var(--accent-dark);
 }
 
 .link-button {
@@ -311,10 +325,6 @@ button:disabled {
 
 .stats strong {
   color: var(--text);
-}
-
-.hidden {
-  display: none;
 }
 
 .auth-page {
@@ -425,25 +435,10 @@ th {
   padding: 0 10px;
 }
 
-.toast {
-  position: fixed;
-  right: 18px;
-  bottom: 18px;
-  max-width: min(420px, calc(100vw - 36px));
-  padding: 12px 14px;
-  border-radius: 8px;
-  background: var(--ink);
-  color: #fff;
-  box-shadow: 0 18px 50px rgb(15 23 42 / 0.25);
-  transform: translateY(20px);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 160ms ease, transform 160ms ease;
-}
-
-.toast.visible {
-  opacity: 1;
-  transform: translateY(0);
+.muted,
+.loading-text {
+  color: var(--muted);
+  font-weight: 700;
 }
 
 @media (max-width: 640px) {
@@ -467,13 +462,13 @@ th {
     flex-direction: column;
   }
 
+  .brand-logo {
+    width: min(230px, 80vw);
+  }
+
   .top-actions {
     width: 100%;
     justify-content: flex-start;
-  }
-
-  .brand-logo {
-    width: min(230px, 80vw);
   }
 
   .inline-form,
